@@ -224,6 +224,3 @@ python -m airwave run --config examples/accessibility.yaml
 - **Speech is the slow channel.** Budget ~800ms for a spoken command against ~150ms for a gesture. Assign latency-tolerant actions to voice.
 - **Backlighting breaks hand detection.** A window behind you is the single most common reason detection fails; the overlay surfaces MediaPipe's confidence so you can see it happening.
 
-## License
-
-MIT.
