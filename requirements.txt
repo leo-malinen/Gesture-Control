@@ -1,0 +1,28 @@
+# Airwave runtime dependencies.
+#
+# Lower bounds, not exact pins: this is an application people clone and run on
+# three operating systems and several Python versions, and hard pins on wheels
+# this large (mediapipe, opencv) turn "pip install -r requirements.txt" into a
+# source build on any machine that lacks the exact wheel. The upper bounds are
+# where a known-breaking major version begins.
+#
+# Verified against: mediapipe 0.10.35, opencv-python 5.0.0.93, numpy 2.3.5,
+# PyAutoGUI 0.9.54, sounddevice 0.5.5, PyYAML 6.0.3, Python 3.13.
+
+mediapipe>=0.10.9,<0.11
+opencv-python>=4.8,<6
+numpy>=1.24,<3
+PyYAML>=6.0,<7
+PyAutoGUI>=0.9.54,<1
+sounddevice>=0.4.6,<1
+
+# --- optional, install only if you want the feature -------------------------
+#
+# Speech commands (settings.speech.enabled: true). Pick one:
+#   pip install vosk               # fast, ~50MB model, lower accuracy
+#   pip install faster-whisper     # accurate, ~150MB model, slower on CPU
+#
+# macOS media keys (playpause / nexttrack) and the Accessibility check:
+#   pip install pyobjc-framework-Quartz pyobjc-framework-Cocoa
+#
+# The trained-gesture classifier needs nothing extra - it is plain numpy.

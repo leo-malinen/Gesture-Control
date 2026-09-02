@@ -1,0 +1,79 @@
+# Alternative input for limited fine motor control or RSI.
+#
+# Tuned for the tertiary user in the PRD. The guiding idea: nothing here should
+# require holding a precise pose, and nothing should require a fast movement.
+# Airwave is a supplement to the keyboard and mouse, not a replacement.
+#
+# Use with:  python -m airwave run --config examples/accessibility.yaml
+
+settings:
+  camera_index: 0
+
+  # Forgiving recognition. More frames means more tolerance for a hand that
+  # drifts or trembles - the window only needs the *label* to stay the same,
+  # and a longer window makes an unsteady hand more likely to average out.
+  stable_frames: 7
+  cooldown_ms: 1200
+
+  # Lower detection confidence: better to occasionally see a hand that is not
+  # quite fully formed than to lose tracking on a hand that cannot fully open.
+  min_detection_confidence: 0.5
+  min_tracking_confidence: 0.4
+
+  # A more generous pinch: fingers that cannot close all the way still count.
+  pinch_threshold: 0.06
+
+  arming:
+    enabled: true
+    gesture: thumbs_up
+    hold_ms: 1500           # a long, unhurried hold rather than a quick flick
+    timeout_s: 12           # a long window - no rush to act once armed
+    disarm_on_fire: false
+
+  mouse:
+    enabled: true
+    smoothing: 0.85         # heavy smoothing absorbs tremor
+    active_region: [0.3, 0.3, 0.7, 0.7]   # a small region: less arm travel
+    pinch_click: true
+    dwell_click: true       # click by resting the cursor - no pinch required
+    dwell_ms: 1200
+    dwell_radius: 0.035     # a generous radius, so drift does not cancel it
+    click_cooldown_ms: 800
+
+  audio: { enabled: true, multiplier: 6.0 }
+  speech: { enabled: false }   # set true after: pip install vosk
+
+  overlay: true
+  show_landmarks: true
+
+bindings:
+  - name: "Enter"
+    trigger: { type: gesture, value: open_palm }
+    action:  { type: key, keys: [enter] }
+
+  - name: "Escape"
+    trigger: { type: gesture, value: rock }
+    action:  { type: key, keys: [escape] }
+
+  - name: "Scroll down"
+    trigger: { type: gesture, value: two }
+    action:  { type: scroll, amount: -3 }
+
+  - name: "Scroll up"
+    trigger: { type: gesture, value: one }
+    action:  { type: scroll, amount: 3 }
+
+  # A clap is the lowest-effort trigger in the system: no pose, no precision.
+  - name: "Pause everything"
+    trigger: { type: sound, value: double_clap }
+    action:  { type: mode, target: pause, verb: toggle }
+
+  - name: "Toggle mouse control"
+    trigger: { type: gesture, value: l_shape }
+    action:  { type: mode, target: mouse, verb: toggle }
+
+  # Speech is the slow channel (~800ms) - give it the latency-tolerant jobs.
+  # Enable settings.speech.enabled first.
+  # - name: "Switch window"
+  #   trigger: { type: speech, value: "switch window" }
+  #   action:  { type: hotkey, keys: [alt, tab] }

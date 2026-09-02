@@ -1,0 +1,61 @@
+# Media control with wet hands in the kitchen.
+#
+# Tuned for the secondary user in the PRD: a small gesture set, and false
+# positives that matter more than misses. You are cooking, the laptop is on the
+# counter, and a stray hand movement must not skip your podcast.
+#
+# Use with:  python -m airwave run --config examples/media-kitchen.yaml
+
+settings:
+  camera_index: 0
+
+  # Deliberately strict. 8 frames is ~270ms of holding still - slower than the
+  # default, and much harder to trigger by accident while chopping onions.
+  stable_frames: 8
+  cooldown_ms: 1500
+
+  # Arming ON. This is the setting that makes the difference between "useful"
+  # and "I turned it off after a day".
+  arming:
+    enabled: true
+    gesture: thumbs_up
+    hold_ms: 800
+    timeout_s: 6
+    disarm_on_fire: true    # one action per arm - no accidental second command
+
+  # A clap is the fastest trigger available and needs no clean hands at all.
+  audio:
+    enabled: true
+    multiplier: 10.0        # a kitchen is noisy; run calibrate-audio to tune
+    floor: 0.09
+
+  mouse: { enabled: false }
+  speech: { enabled: false }
+  overlay: true
+
+bindings:
+  - name: "Play/pause"
+    trigger: { type: gesture, value: open_palm }
+    action:  { type: key, keys: [playpause] }
+
+  - name: "Next track"
+    trigger: { type: sound, value: clap }
+    action:  { type: key, keys: [nexttrack] }
+    cooldown_ms: 2000
+
+  - name: "Previous track"
+    trigger: { type: sound, value: double_clap }
+    action:  { type: key, keys: [prevtrack] }
+    cooldown_ms: 2000
+
+  - name: "Volume up"
+    trigger: { type: gesture, value: one }
+    action:  { type: key, keys: [volumeup], repeat: 4 }
+
+  - name: "Volume down"
+    trigger: { type: gesture, value: two }
+    action:  { type: key, keys: [volumedown], repeat: 4 }
+
+  - name: "Mute"
+    trigger: { type: gesture, value: rock }
+    action:  { type: key, keys: [volumemute] }
