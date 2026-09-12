@@ -1,4 +1,4 @@
-# Airwave
+# Gesture Control
 
 Control your computer with hand gestures and sound. A webcam watches your hands, a microphone listens for claps and spoken commands, and both feed one event pipeline that maps what you did to keystrokes, mouse movement, or shell commands.
 
