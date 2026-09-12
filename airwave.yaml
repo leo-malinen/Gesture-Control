@@ -1,0 +1,147 @@
+# Airwave configuration
+# Everything here hot-reloads: save the file and the running app picks it up.
+# Validate without running the camera:  python -m airwave check
+
+settings:
+  # ---- camera ----------------------------------------------------------
+  camera_index: 0
+  camera_width: 640
+  camera_height: 480
+  mirror: true             # selfie view; move right, the hand moves right
+
+  # ---- the reliability dials -------------------------------------------
+  stable_frames: 5         # consecutive frames that must agree
+  cooldown_ms: 800         # per-trigger dead time after firing
+
+  min_detection_confidence: 0.6
+  min_tracking_confidence: 0.5
+  pinch_threshold: 0.04
+
+  classifier: rules
+  model_path: data/model.npz
+
+  # ---- arming ----------------------------------------------------------
+  # Off, so gestures fire immediately. `rock` is protected instead by its own
+  # 3-second hold requirement (see the Sleep binding below).
+  arming:
+    enabled: false
+    gesture: thumbs_up
+    hold_ms: 1000
+    timeout_s: 5
+    wake_word: true
+
+  # ---- mouse control ---------------------------------------------------
+  mouse:
+    enabled: false
+    smoothing: 0.6
+    active_region: [0.25, 0.25, 0.75, 0.75]
+    pinch_click: true
+    dwell_click: false
+
+  # ---- swipes (dynamic gestures) ---------------------------------------
+  # A swipe fires when the palm crosses `min_distance` of the frame faster than
+  # `min_velocity`, travelling mostly along one axis. Raise min_distance or
+  # min_velocity if ordinary hand movement sets it off.
+  #
+  # motion_gate suppresses pose recognition while the hand is moving this fast.
+  # Without it, swiping with an open palm would also fire the open_palm binding.
+  swipe:
+    enabled: true
+    min_distance: 0.22     # fraction of the frame the palm must cross
+    min_velocity: 0.9      # frame-widths per second
+    axis_ratio: 1.6        # how much one axis must dominate the other
+    refractory_ms: 700     # minimum gap between two swipes
+    motion_gate: 0.6       # above this speed, poses are ignored
+
+  # ---- audio -----------------------------------------------------------
+  audio:
+    enabled: true
+    samplerate: 16000
+    blocksize: 512
+    multiplier: 8.0
+    floor: 0.06
+    refractory_ms: 180
+    double_clap_min_ms: 150
+    double_clap_max_ms: 600
+
+  # ---- speech ----------------------------------------------------------
+  # Needed for dictation (the `three` / `four` bindings below).
+  # Engine: pip install vosk
+  speech:
+    enabled: true
+    engine: vosk
+    wake_word: "hey airwave"
+    listen_window_s: 4.0
+    similarity: 0.72
+    dictation_trailing_space: true   # add a space after each dictated phrase
+
+  # ---- safety ----------------------------------------------------------
+  allow_shell: false
+
+  overlay: true
+  show_landmarks: true
+  hot_reload: true
+  log_level: info
+
+custom_gestures: []
+
+bindings:
+  # --- media ------------------------------------------------------------
+  - name: "Play/pause"
+    trigger: { type: gesture, value: open_palm }
+    action:  { type: key, keys: [playpause] }
+
+  - name: "Volume up"
+    trigger: { type: gesture, value: one }
+    action:  { type: key, keys: [volumeup], repeat: 3 }
+
+  - name: "Volume down"
+    trigger: { type: gesture, value: two }
+    action:  { type: key, keys: [volumedown], repeat: 3 }
+
+  - name: "Next track"
+    trigger: { type: sound, value: clap }
+    action:  { type: key, keys: [nexttrack] }
+    cooldown_ms: 1200
+
+  # --- dictation --------------------------------------------------------
+  # `three` starts typing what you say at the cursor; `four` stops.
+  # While dictation is on the wake word is bypassed - everything you say is
+  # typed - so stop it before you talk to anyone.
+  - name: "Start dictation"
+    trigger: { type: gesture, value: three }
+    action:  { type: mode, target: dictation, verb: on }
+
+  - name: "Stop dictation"
+    trigger: { type: gesture, value: four }
+    action:  { type: mode, target: dictation, verb: off }
+
+  # --- slides -----------------------------------------------------------
+  # Arrow keys drive Google Slides, PowerPoint and Keynote alike.
+  # Touchscreen convention: swipe left to advance, as if pushing the current
+  # slide away. Swap the two `keys` values if you prefer the opposite.
+  - name: "Next slide"
+    trigger: { type: motion, value: swipe_left }
+    action:  { type: key, keys: [right] }
+
+  - name: "Previous slide"
+    trigger: { type: motion, value: swipe_right }
+    action:  { type: key, keys: [left] }
+
+  # --- system -----------------------------------------------------------
+  # hold_ms means the pose must be held this long before it fires. Sleeping the
+  # machine on a single misread frame would cost you your session, so `rock`
+  # has to be deliberate: 3 full seconds.
+  - name: "Sleep the computer"
+    trigger: { type: gesture, value: rock }
+    hold_ms: 3000
+    cooldown_ms: 5000
+    action:  { type: system, target: sleep }
+
+  # --- unbound ----------------------------------------------------------
+  # `fist`  is the neutral pose - return to it between commands. Leave unbound.
+  # `ok`    deliberately unbound.
+  # `spock` deliberately unbound.
+  # `thumbs_up` is the arming gesture; it becomes bindable if arming stays off,
+  #             but leaving it free means you can switch arming on any time.
+  # `pinch` becomes a mouse click when mouse control is on.
