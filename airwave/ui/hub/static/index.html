@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Airwave</title>
+<link rel="stylesheet" href="/static/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>%E2%9C%8B</text></svg>">
+</head>
+<body>
+
+<!-- Ambient layers: blueprint grid + conic spotlight, per the design system. -->
+<div class="grid-layer" aria-hidden="true"></div>
+<div class="spotlight" aria-hidden="true"></div>
+
+<header class="navbar">
+  <div class="navbar-inner">
+    <a class="wordmark" href="/">
+      <span class="wordmark-glyph" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 12h2.5l2-6 3 13 3-9 2 4H21"/>
+        </svg>
+      </span>
+      <span class="wordmark-text">Airwave</span>
+    </a>
+
+    <nav class="nav-links" aria-label="Sections">
+      <a class="nav-link is-active" href="#live" data-view="live">Live</a>
+      <a class="nav-link is-disabled" href="#bindings" data-view="bindings" aria-disabled="true">Bindings</a>
+      <a class="nav-link is-disabled" href="#gestures" data-view="gestures" aria-disabled="true">Gestures</a>
+      <a class="nav-link is-disabled" href="#audio" data-view="audio" aria-disabled="true">Audio</a>
+      <a class="nav-link is-disabled" href="#settings" data-view="settings" aria-disabled="true">Settings</a>
+    </nav>
+
+    <div class="nav-actions">
+      <span class="status-pill" id="connection-pill" data-state="connecting">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span id="connection-text">Connecting</span>
+      </span>
+      <button class="pill-button" id="clear-log" type="button">Clear log</button>
+    </div>
+  </div>
+</header>
+
+<main class="layout" id="live">
+
+  <!-- ---------------------------------------------------------- video ---- -->
+  <section class="panel panel-video" aria-labelledby="feed-heading">
+    <div class="eyebrow-row">
+      <span class="rule" aria-hidden="true"></span>
+      <span class="eyebrow" id="feed-heading">Live feed</span>
+      <span class="rule" aria-hidden="true"></span>
+    </div>
+
+    <div class="video-frame" id="video-frame" data-state="loading">
+      <img id="video" alt="Live camera feed with detected hand landmarks drawn over it">
+
+      <!-- Floating readouts over the video: what is detected, right now. -->
+      <div class="video-hud">
+        <div class="hud-block hud-gesture">
+          <span class="hud-label">Gesture</span>
+          <span class="hud-value" id="hud-gesture">&mdash;</span>
+          <span class="hud-sub" id="hud-confidence"></span>
+        </div>
+
+        <div class="hud-block hud-stability">
+          <span class="hud-label">Stability</span>
+          <div class="meter" role="progressbar" aria-labelledby="hud-stability-value"
+               aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="stability-meter">
+            <div class="meter-fill" id="stability-fill"></div>
+          </div>
+          <span class="hud-sub" id="hud-stability-value">0%</span>
+        </div>
+
+        <div class="hud-block hud-arm" id="hud-arm-block">
+          <span class="hud-label">Arming</span>
+          <span class="hud-value" id="hud-arm">Off</span>
+          <span class="hud-sub" id="hud-arm-sub"></span>
+        </div>
+      </div>
+
+      <div class="video-chips">
+        <span class="chip" id="chip-fps">&mdash; fps</span>
+        <span class="chip" id="chip-mode">Gestures</span>
+        <span class="chip chip-quiet" id="chip-audio">Audio idle</span>
+      </div>
+
+      <!-- Shown when there is no video: camera missing, model missing, etc. -->
+      <div class="video-empty" id="video-empty">
+        <div class="empty-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 2l20 20"/>
+            <path d="M15 10.5V7a1 1 0 0 0-1-1H8.5"/>
+            <path d="M4.5 6A1 1 0 0 0 4 7v10a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-2"/>
+            <path d="M15 13l6 3.5V7l-3.6 2.1"/>
+          </svg>
+        </div>
+        <h2 class="empty-title" id="empty-title">Waiting for camera</h2>
+        <p class="empty-body" id="empty-body">Connecting to the capture device.</p>
+        <pre class="empty-fix" id="empty-fix" hidden></pre>
+      </div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat">
+        <span class="stat-value" id="stat-fired">0</span>
+        <span class="stat-label">Fired</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value" id="stat-suppressed">0</span>
+        <span class="stat-label">Suppressed</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value" id="stat-fps">&mdash;</span>
+        <span class="stat-label">Frames / sec</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value" id="stat-latency">&mdash;</span>
+        <span class="stat-label">Mean latency</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------ log ---- -->
+  <aside class="panel panel-log" aria-labelledby="log-heading">
+    <div class="eyebrow-row">
+      <span class="rule" aria-hidden="true"></span>
+      <span class="eyebrow" id="log-heading">Event log</span>
+      <span class="rule" aria-hidden="true"></span>
+    </div>
+
+    <div class="log-filters" role="group" aria-label="Filter events">
+      <button class="filter-pill is-active" data-filter="all" type="button">All</button>
+      <button class="filter-pill" data-filter="fired" type="button">Fired</button>
+      <button class="filter-pill" data-filter="suppressed" type="button">Suppressed</button>
+    </div>
+
+    <p class="log-note">Times are UTC.</p>
+
+    <div class="log-body">
+      <ol class="log" id="log" aria-live="polite" aria-relevant="additions"></ol>
+
+      <div class="log-empty" id="log-empty">
+        <p class="empty-body">
+          No events yet. Recognized gestures, claps and spoken commands appear
+          here the moment the dispatcher decides what to do with them &mdash;
+          including the ones it deliberately suppresses.
+        </p>
+      </div>
+    </div>
+  </aside>
+</main>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
