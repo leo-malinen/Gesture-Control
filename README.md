@@ -220,22 +220,6 @@ Full details in [docs/SETUP.md](docs/SETUP.md).
 
 ---
 
-## Architecture
-
-```
-┌──────────────┐
-│ Camera thread│ capture → MediaPipe → normalize → classify → stabilize ──┐
-└──────────────┘                                                          │
-┌──────────────┐                                                          ├──> EventQueue
-│ Audio thread │ stream → onset/VAD → clap | wake word + phrase ──────────┘        │
-└──────────────┘                                                                   │
-┌──────────────────────────────────────────────────────────────────────────────────┘
-│
-├──> Dispatcher: arming → cooldown → binding lookup → Action
-│
-└──> Overlay: live preview, gesture, stability, arming, cooldown, event log
-```
-
 Two rules hold the design together:
 
 **Producers never act.** The camera and audio threads have exactly one output — pushing typed events onto a queue. They cannot press keys. That is what makes them testable in isolation (feed a recorded clip, assert the event sequence) and what makes a third input modality a purely additive change.
