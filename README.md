@@ -15,12 +15,6 @@ Hold up an open palm to play/pause. Hold up one finger for volume up.
 
 ---
 
-## The actual problem
-
-Detecting a hand is one function call — MediaPipe solved that. The hard part is everything after it: turning a noisy 30fps stream of hand poses into discrete commands that fire **exactly once**, when you meant them, and never otherwise.
-
-A per-frame classifier that is 95% accurate is wrong about **ninety times a minute** at 30fps. Making that number zero is the whole product, and it is what most of this codebase is:
-
 | Defense | What it stops | Where |
 |---|---|---|
 | **Stability window** | A hand passing through "two" on its way to "open palm" | [stabilizer.py](airwave/vision/stabilizer.py) |
