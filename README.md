@@ -248,14 +248,6 @@ Two starting points beyond the default, both validated by the test suite:
 python -m airwave run --config examples/accessibility.yaml
 ```
 
-## Known limitations
-
-- **One hand.** Two-handed gestures and multi-user control are out of scope for v1.
-- **Static poses only.** No swipes or dynamic gestures — those need a temporal model.
-- **Wayland cannot receive synthetic input.** Documented above; `ydotool` is the workaround.
-- **Speech is the slow channel.** Budget ~800ms for a spoken command against ~150ms for a gesture. Assign latency-tolerant actions to voice.
-- **Backlighting breaks hand detection.** A window behind you is the single most common reason detection fails; the overlay surfaces MediaPipe's confidence so you can see it happening.
-
 ## License
 
 MIT.
