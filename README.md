@@ -237,17 +237,6 @@ The suite is organized around the failure modes, not the modules — `test_fist_
 
 ---
 
-## Example configurations
-
-Two starting points beyond the default, both validated by the test suite:
-
-- **[examples/media-kitchen.yaml](examples/media-kitchen.yaml)** — media control with wet hands. Strict stability, long cooldowns, arming on with one-action-per-arm, and claps for track skipping since they need no clean hands at all.
-- **[examples/accessibility.yaml](examples/accessibility.yaml)** — alternative input for limited fine motor control or RSI. Forgiving thresholds, a generous pinch, heavy cursor smoothing to absorb tremor, dwell clicking, and a long arming window so nothing is rushed.
-
-```bash
-python -m airwave run --config examples/accessibility.yaml
-```
-
 ## License
 
 MIT.
