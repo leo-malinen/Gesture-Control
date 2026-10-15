@@ -224,19 +224,6 @@ More in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ---
 
-## Tests
-
-```bash
-pip install -r requirements-dev.txt
-python -m pytest
-```
-
-331 tests, under ten seconds, **no camera, no microphone and no model download required**. Hand poses are synthesized as landmark geometry ([tests/conftest.py](tests/conftest.py)), so the whole vision path is exercised on CI hardware that has never seen a webcam.
-
-The suite is organized around the failure modes, not the modules — `test_fist_is_not_read_as_pinch`, `test_a_flicker_shorter_than_the_window_never_fires`, `test_cooldown_is_per_trigger_not_global`. Every false positive that gets fixed leaves a test behind.
-
----
-
 ## License
 
 MIT.
