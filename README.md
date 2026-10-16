@@ -220,8 +220,6 @@ Two rules hold the design together:
 
 **The dispatcher owns all side effects.** Every keypress, mouse move and shell command originates in one place, which is also the only place that needs to know about OS differences.
 
-More in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
-
 ---
 
 ## License
