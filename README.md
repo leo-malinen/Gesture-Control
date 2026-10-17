@@ -107,26 +107,6 @@ Mistakes are reported with the line number and a suggestion, all of them at once
 
 ---
 
-## Commands
-
-| Command | What it does |
-|---|---|
-| `python -m airwave run` | The app. `--dry-run` logs actions instead of performing them |
-| `python -m airwave hub` | The web dashboard: live feed on the left, event log on the right |
-| `python -m airwave doctor` | Diagnoses a broken setup — permissions, devices, model, config |
-| `python -m airwave check` | Validates the config and lists every binding |
-| `python -m airwave devices` | Lists cameras and microphones with their indices |
-| `python -m airwave fetch-speech-model` | Downloads the vosk model needed for dictation |
-| `python -m airwave calibrate-audio` | Live RMS meter for picking clap thresholds for your room |
-| `python -m airwave record <gesture>` | Records samples for a custom gesture |
-| `python -m airwave train` | Trains the classifier on what you recorded |
-| `python -m airwave replay <video.mp4>` | Runs a clip through the pipeline and prints the events |
-| `python -m airwave bench` | Measures fps and p95 frame time against the targets |
-
-While the preview window is focused: `q` quit, `a` arm now, `m` toggle mouse, `p` pause, `l` landmarks, `h` help.
-
----
-
 ## The web hub
 
 ```bash
