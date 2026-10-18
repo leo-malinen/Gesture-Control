@@ -182,18 +182,6 @@ Training prints per-class counts and a confusion matrix, because "89% accuracy" 
 
 ---
 
-## Setup notes per OS
-
-**macOS** — grant Accessibility permission (System Settings → Privacy & Security → Accessibility) or every keystroke is silently discarded and the app looks broken. `doctor` checks this. For media keys, `pip install pyobjc-framework-Quartz pyobjc-framework-Cocoa`.
-
-**Windows** — works out of the box. Media keys and volume keys are native.
-
-**Linux (X11)** — works. **Linux (Wayland)** — `pyautogui` cannot synthesize input under Wayland, by design. Log into an X11 session, or use `ydotool` via `shell` actions. `doctor` detects this and says so rather than failing silently.
-
-Full details in [docs/SETUP.md](docs/SETUP.md).
-
----
-
 Two rules hold the design together:
 
 **Producers never act.** The camera and audio threads have exactly one output — pushing typed events onto a queue. They cannot press keys. That is what makes them testable in isolation (feed a recorded clip, assert the event sequence) and what makes a third input modality a purely additive change.
