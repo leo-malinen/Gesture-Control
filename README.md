@@ -89,22 +89,6 @@ bindings:
 
 **Triggers:** `gesture`, `sound`, `speech`.
 **Actions:** `key`, `hotkey`, `mouse_move`, `mouse_click`, `scroll`, `shell`, `mode`, `noop`.
-
-Mistakes are reported with the line number and a suggestion, all of them at once:
-
-```
-2 problems in airwave.yaml:
-  airwave.yaml:14: bindings[0].trigger.value
-      unknown gesture 'open_palmm'
-      hint: did you mean 'open_palm'?
-  airwave.yaml:19: bindings[1].action.command
-      shell actions are disabled
-      hint: set 'settings.allow_shell: true' to enable them - a shared config
-            that runs arbitrary commands is a real attack surface, so this is opt-in
-```
-
-`shell` actions require `allow_shell: true`. A config file that executes commands is a real attack surface if you download someone else's — treat a shared `airwave.yaml` the way you would a shell script.
-
 ---
 
 ## The web hub
