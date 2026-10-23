@@ -109,14 +109,6 @@ Design: the [AuthKit](https://styles.refero.design/) system — midnight canvas,
 
 ---
 
-## The overlay tells you why nothing happened
-
-Every gate that can swallow a gesture is drawn on the preview: the stability bar, the arming state and its countdown, the cooldown remaining, the live fps, and a log of the last few events with what the dispatcher did with each.
-
-This matters more than it sounds. "Gesture misread" and "gesture correct but still in cooldown" look identical from the outside — both are *nothing happening*. If you can see the stability bar resetting, you know your pose is being classified as something else. If you see it fill and then read `cooldown`, you know to wait.
-
----
-
 ## Mouse control
 
 Off by default. Enable with `settings.mouse.enabled: true`, or press `m`.
